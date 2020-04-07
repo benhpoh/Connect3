@@ -4,8 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jedi vs Sith</title>
+    <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
+    <main>
+        <header>
+            Tic Tac Toe
+        </header>
+        <div class="game-board">
+            <div class="grd-a grd-1 grd-x tile"></div> <div class="grd-a grd-2 tile"></div> <div class="grd-a grd-3 grd-y tile"></div>
+            <div class="grd-b grd-1 tile"></div> <div class="grd-b grd-2 grd-x grd-y tile"></div> <div class="grd-b grd-3 tile"></div>
+            <div class="grd-c grd-1 grd-y tile"></div> <div class="grd-c grd-2 tile"></div> <div class="grd-c grd-3 grd-x tile"></div>
+        </div>
+        <section class="scoreboard">
+            <div>Player 1 score</div>
+            <div>Player 2 score</div>
+        </section>
+    </main>
     <script src="gamelogic.js"></script>
 </body>
 </html>
