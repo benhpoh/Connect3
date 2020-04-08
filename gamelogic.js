@@ -1,37 +1,40 @@
 console.log("Script loaded!")
 
-// 1. create a 3x3 grid
+// 1. create a 3x3 grid // DONE
 //  1.1 each box in the grid needs to be responsive. addEventListener? // DONE
-//  1.2 each box needs to be uniquely identified. ID instead of class?
+//  1.2 each box needs to be uniquely identified. ID instead of class? // DONE
 
-// 2. OPTIONAL UPGRADE. Allow player to choose their avatar. blue / red
-//  2.1 player 1 selects avatar, player 2 gets assigned remainder
+// 2. OPTIONAL UPGRADE. Allow player to choose their avatar. blue / red  // DECLINED
+//  2.1 player 1 selects avatar, player 2 gets assigned remainder // DECLINED
+//  2.2 Decided to alternate players by having the loser start the new game. // DONE
+//      2.2.1 Unexpected side effect. In event of a draw, the loser continues to start. Outcome acceptable. // DONE
 
-// 3. when player 1 selects a box, run a check
+// 3. when player 1 selects a box, run a check // DONE
 //  3.1 if the box has already been marked, ask to select again // DONE
 //  3.2 else if the box hasn't been previously marked, mark it with player 1's icon // DONE
 
 // 4. check game logic
 //  4.1 after each player's turn, check if any grid is complete // DONE
-//      4.1.1 this could be done via a positive / negative counter, where player 1's boxes add a positive value, and player 2's returns a negative.
+//      4.1.1 this could be done via a positive / negative counter, where player 1's boxes add a positive value, and player 2's returns a negative. // DONE
 //  4.2 if there's 3 in a row, display winner // DONE
-//      4.2.1 If 3 of player1's are in line, the value should be +3, or -3 if player2's are in line
+//      4.2.1 If 3 of player1's are in line, the value should be +3, or -3 if player2's are in line // DONE
 //      4.2.2 Board should then be disabled to prevent any further input. // DONE
 //  4.3 else swap turns to next player // DONE
 
 // 5. winner display // DONE
-//  5.1 add score to winning player
-//  5.2 resets board to empty
+//  5.1 add score to winning player // DONE
+//  5.2 resets board to empty // DONE
 
 // 1
 const tiles = document.querySelectorAll(".tile");
 const statusMessage = document.querySelector("#status-message");
-const resetBtn = document.querySelector("#reset-btn");
-const player1ScoreDisplay = document.querySelector("#player1-score-display");
-const player2ScoreDisplay = document.querySelector("#player2-score-display");
-var playerNumber = 1;
-var player1Score = 0;
-var player2Score = 0;
+const resetBox = document.querySelector("#reset-box");
+const redPlayerScoreDisplay = document.querySelector("#redPlayer-score-display");
+const bluePlayerScoreDisplay = document.querySelector("#bluePlayer-score-display");
+var playerTurn = "red";
+var lastWinner = null;
+var redPlayerScore = 0;
+var bluePlayerScore = 0;
 
 //grid checker
 const grdA = document.querySelectorAll(".grd-a")
@@ -47,9 +50,9 @@ const allGrids = [grdA, grdB, grdC, grd1, grd2, grd3, grdX, grdY]
 const calculateGridScore = (grid) => {
     var gridScore = 0;
     for (let i = 0; i < grid.length; i++) {
-        if (grid[i].classList.contains("player1")) {
+        if (grid[i].classList.contains("redPlayer")) {
             gridScore += 1;
-        } else if (grid[i].classList.contains("player2")) {
+        } else if (grid[i].classList.contains("bluePlayer")) {
             gridScore -= 1;
         }
     }
@@ -68,67 +71,73 @@ const checkWin = () => {
     allGrids.forEach((grid) => { 
         gridScore = calculateGridScore(grid);
         if (gridScore === 3) {
-            console.log("Player 1 wins");
             statusMessage.textContent = "Red player wins! Click here to reset the board."
-            setTimeout(clearLoser, 2000, "player2");
-            player1Score += 1;
-            player1ScoreDisplay.textContent = player1Score;
-            playerNumber = null;
+            setTimeout(clearLoser, 1000, "bluePlayer");
+            lastWinner = "red";
+            playerTurn = null;
+            redPlayerScore += 1;
+            redPlayerScoreDisplay.textContent = redPlayerScore;
         } else if (gridScore === -3) {
-            console.log("Player 2 wins");
-            setTimeout(clearLoser, 2000, "player1");
+            setTimeout(clearLoser, 1000, "redPlayer");
             statusMessage.textContent = "Blue player wins! Click here to reset the board."
-            player2Score += 1;
-            player2ScoreDisplay.textContent = player2Score;
-            playerNumber = null;
+            lastWinner = "blue";
+            playerTurn = null;
+            bluePlayerScore += 1;
+            bluePlayerScoreDisplay.textContent = bluePlayerScore;
         }
     })
 }
 
 const handleTile = (event) => {
-    if (playerNumber == null) {
+    if (playerTurn == null) {
         console.log("Game over");
         return;
     } // guard condition
     
-    if (event.target.classList.contains("player1") || event.target.classList.contains("player2")) {
+    if (event.target.classList.contains("redPlayer") || event.target.classList.contains("bluePlayer")) {
         statusMessage.textContent = "Tile has already been occupied. Choose another tile.";
-    } else if (playerNumber === 1) {
-        event.target.classList.add("player1");
-        playerNumber = 2;
+    } else if (playerTurn === "red") {
+        event.target.classList.add("redPlayer");
+        playerTurn = "blue";
         statusMessage.textContent = "Blue player's turn";
         checkWin();
-    } else if (playerNumber === 2) {
-        event.target.classList.add("player2");
-        playerNumber = 1;
+    } else if (playerTurn === "blue") {
+        event.target.classList.add("bluePlayer");
+        playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
         checkWin();
     }
 
-    var player1Tiles = document.querySelectorAll(".player1").length
-    var player2Tiles = document.querySelectorAll(".player2").length
+    var redPlayerTiles = document.querySelectorAll(".redPlayer").length
+    var bluePlayerTiles = document.querySelectorAll(".bluePlayer").length
 
-    if (playerNumber != null && player1Tiles + player2Tiles === tiles.length) {
+    if (playerTurn != null && redPlayerTiles + bluePlayerTiles === tiles.length) {
         statusMessage.textContent = "It's a draw. Click here to reset the board.";
-        playerNumber = null;
+        playerTurn = null;
     }
 }
 
 const handleReset = () => {
-    if (playerNumber === null) {
+    if (playerTurn === null) {
         statusMessage.textContent = "One second. Board is being reset...";
         tiles.forEach( (tile) => {
-            tile.classList.remove("player1");
-            tile.classList.remove("player2");
+            tile.classList.remove("redPlayer");
+            tile.classList.remove("bluePlayer");
         })
         const refreshStatus = () => {
-            statusMessage.textContent = "Red player's turn";
+            if (lastWinner === "blue") {
+                playerTurn = "red";
+                statusMessage.textContent = "Red player, select a starting tile.";
+            } else if (lastWinner === "red") {
+                playerTurn = "blue";
+                statusMessage.textContent = "Blue player, select a starting tile.";
+            }
         }
-        setTimeout(refreshStatus, 1000)
+        setTimeout(refreshStatus, 1500)
     }
 }
 
 tiles.forEach( (tile) => {
     tile.addEventListener("click", handleTile)
 });
-resetBtn.addEventListener("click",handleReset)
+resetBox.addEventListener("click",handleReset)

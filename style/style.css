@@ -28,14 +28,14 @@ main {
     padding: 0.5rem;
 }
 .tile {
-    box-shadow: 0 0 15px rgba(150, 150, 150, 0.5);
+    box-shadow: 0 0 15px rgba(150, 150, 150, 0.8);
     transition: all 0.5s ease-out;
 }
-.player1 {
-    box-shadow: 0 0 25px rgba(255, 10, 10, 0.5);
+.redPlayer {
+    box-shadow: 0 0 25px rgba(255, 10, 10, 0.8);
 }
-.player2 {
-    box-shadow: 0 0 25px rgba(60, 60, 255, 0.5);
+.bluePlayer {
+    box-shadow: 0 0 25px rgba(60, 60, 255, 0.8);
 }
 h3 {
     margin: 0;
