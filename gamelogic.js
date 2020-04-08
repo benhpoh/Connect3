@@ -27,6 +27,7 @@ console.log("Script loaded!")
 
 // 1
 const tiles = document.querySelectorAll(".tile");
+const headerTiles = document.querySelectorAll(".header-tile");
 const statusMessage = document.querySelector("#status-message");
 const resetBox = document.querySelector("#reset-box");
 const redPlayerScoreDisplay = document.querySelector("#redPlayer-score-display");
@@ -68,24 +69,40 @@ const checkWin = () => {
             tile.classList.remove(loser)
         })
     }
+    const changeHeader = () => {
+        if (lastWinner === "red") {
+            headerTiles.forEach( (tile) => {
+                tile.classList.add("red-winner");
+                tile.classList.remove("blue-winner");
+            })
+        } else if (lastWinner === "blue") {
+            headerTiles.forEach( (tile) => {
+                tile.classList.add("blue-winner");
+                tile.classList.remove("red-winner");
+            })
+        }
+    }
 
     allGrids.forEach((grid) => { 
         gridScore = calculateGridScore(grid);
         if (gridScore === 3) {
             statusMessage.textContent = "Red player wins! Click here to reset the board."
-            setTimeout(clearLoser, 1000, "bluePlayer");
+            setTimeout(clearLoser, 1000, "blue-player");
             lastWinner = "red";
             playerTurn = null;
             redPlayerScore += 1;
-            redPlayerScoreDisplay.textContent = redPlayerScore;
+            changeHeader();
         } else if (gridScore === -3) {
-            setTimeout(clearLoser, 1000, "redPlayer");
+            setTimeout(clearLoser, 1000, "red-player");
             statusMessage.textContent = "Blue player wins! Click here to reset the board."
             lastWinner = "blue";
             playerTurn = null;
             bluePlayerScore += 1;
-            bluePlayerScoreDisplay.textContent = bluePlayerScore;
+            changeHeader();
         }
+        var totalScore = redPlayerScore + bluePlayerScore
+        redPlayerScoreDisplay.textContent = `${redPlayerScore} (${(redPlayerScore/totalScore*100).toFixed(0)}% win rate)`;
+        bluePlayerScoreDisplay.textContent = `${bluePlayerScore} (${(bluePlayerScore/totalScore*100).toFixed(0)}% win rate)`;
     })
 }
 
