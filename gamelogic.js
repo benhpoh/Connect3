@@ -25,11 +25,18 @@ console.log("Script loaded!")
 //  5.1 add score to winning player // DONE
 //  5.2 resets board to empty // DONE
 
-// 1
+// 6. BONUS SECTION
+//  6.1 Create bot to play against
+//      6.1.1 Bot will assume player 2 position. If player 1 does x move, do Y move instead.
+//      6.1.2 Create silly bot first. Use math.random to pick an unclaimed spot.
+//      6.1.3 Create unbeatable bot.
+
+
 const tiles = document.querySelectorAll(".tile");
 const headerTiles = document.querySelectorAll(".header-tile");
 const statusMessage = document.querySelector("#status-message");
 const resetBox = document.querySelector("#reset-box");
+const header = document.querySelector("h1");
 const redPlayerScoreDisplay = document.querySelector("#redPlayer-score-display");
 const bluePlayerScoreDisplay = document.querySelector("#bluePlayer-score-display");
 const gameBoard = document.querySelector(".game-board");
@@ -100,9 +107,14 @@ const checkWin = () => {
             bluePlayerScore += 1;
             changeHeader();
         }
-        var totalScore = redPlayerScore + bluePlayerScore
-        redPlayerScoreDisplay.textContent = `${redPlayerScore} (${(redPlayerScore/totalScore*100).toFixed(0)}% win rate)`;
-        bluePlayerScoreDisplay.textContent = `${bluePlayerScore} (${(bluePlayerScore/totalScore*100).toFixed(0)}% win rate)`;
+        var totalScore = redPlayerScore + bluePlayerScore;
+        var redPlayerWinrate = (redPlayerScore / totalScore * 100).toFixed(0);
+        var bluePlayerWinrate = (bluePlayerScore / totalScore * 100).toFixed(0);
+
+        if (totalScore > 0) {
+            redPlayerScoreDisplay.textContent = `${redPlayerScore} (${redPlayerWinrate}% win rate)`;
+            bluePlayerScoreDisplay.textContent = `${bluePlayerScore} (${bluePlayerWinrate}% win rate)`;
+        }
     })
 }
 
@@ -111,7 +123,7 @@ const handleTile = (event) => {
         console.log("Game over");
         return;
     } // guard condition
-    
+
     if (event.target.classList.contains("red-player") || event.target.classList.contains("blue-player")) {
         statusMessage.textContent = "Tile has already been occupied. Choose another tile.";
     } else if (playerTurn === "red") {
@@ -126,12 +138,16 @@ const handleTile = (event) => {
         checkWin();
     }
 
-    var redPlayerTiles = document.querySelectorAll(".red-player").length
-    var bluePlayerTiles = document.querySelectorAll(".blue-player").length
+    var redPlayerTiles = document.querySelectorAll(".red-player").length;
+    var bluePlayerTiles = document.querySelectorAll(".blue-player").length;
 
     if (playerTurn != null && redPlayerTiles + bluePlayerTiles === tiles.length) {
         statusMessage.textContent = "It's a draw. Click here to reset the board.";
         playerTurn = null;
+    }
+    if (header.classList.contains("bot-mode") && playerTurn === "blue") {
+        statusMessage.textContent = "Bot is making a move";
+        setTimeout(sillyBotTurn,2000);
     }
 }
 
@@ -151,13 +167,46 @@ const handleReset = () => {
             } else if (lastWinner === "red") {
                 playerTurn = "blue";
                 statusMessage.textContent = "Blue player, select a starting tile.";
+                if (header.classList.contains("bot-mode") && playerTurn === "blue") {
+                    statusMessage.textContent = "Bot is making a move";
+                    setTimeout(sillyBotTurn,2000);
+                }
             }
         }
         setTimeout(refreshStatus, 1500)
     }
 }
 
+const handleSillyBotMode = (event) => {
+    event.target.classList.remove("super-bot-mode");
+    event.target.classList.toggle("bot-mode");
+}
+const handleSuperBotMode = (event) => {
+    event.target.classList.remove("bot-mode");
+    event.target.classList.toggle("super-bot-mode");
+}
+
 tiles.forEach( (tile) => {
-    tile.addEventListener("click", handleTile)
+    tile.addEventListener("click", handleTile);
 });
-resetBox.addEventListener("click",handleReset)
+resetBox.addEventListener("click",handleReset);
+header.addEventListener("click",handleSillyBotMode);
+header.addEventListener("dblclick",handleSuperBotMode);
+
+// Silly bot
+
+// insert interceptor code when bot-mode is ON, and playerturn is blue
+const sillyBotTurn = () => {
+    var tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+    if (playerTurn === "blue") {
+        while (tileBotChose.classList.contains("red-player") || tileBotChose.classList.contains("blue-player")) {
+            tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+        }
+        tileBotChose.classList.add("blue-player")
+        playerTurn = "red";
+        statusMessage.textContent = "Red player's turn";
+        checkWin();
+    } else {
+        console.log("It's not my turn, human...")
+    }
+}
