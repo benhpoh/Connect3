@@ -148,7 +148,7 @@ const superBotTurn = () => {
                  tiles[2].classList.contains("red-player") || 
                  tiles[6].classList.contains("red-player") || 
                  tiles[8].classList.contains("red-player")) ) {
-        console.log("Bot picking middle tile")
+        // console.log("Bot picking middle tile")
         tiles[4].classList.add("blue-player");
         playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
@@ -158,7 +158,7 @@ const superBotTurn = () => {
                 !tiles[2].classList.contains("red-player") && 
                 !tiles[6].classList.contains("red-player") && 
                 !tiles[8].classList.contains("red-player")){
-        console.log("Bot picking NW tile")
+        // console.log("Bot picking NW tile")
         tiles[0].classList.add("blue-player");
         playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
@@ -170,7 +170,7 @@ const superBotTurn = () => {
             } // guard condition preventing further execution
             gridScore = calculateGridScore(grid);
             if (gridScore === -2) {
-                console.log("Bot completing");
+                // console.log("Bot completing");
                 grid.forEach( (tile) => {
                     if (!tile.classList.contains("blue-player")) {
                         tile.classList.add("blue-player");
@@ -181,7 +181,7 @@ const superBotTurn = () => {
                 })
                 return;
             } else if (gridScore === 2) {
-                console.log("Bot blocking");
+                // console.log("Bot blocking");
                 grid.forEach( (tile) => {
                     if (!tile.classList.contains("red-player")) {
                         tile.classList.add("blue-player");
