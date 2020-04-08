@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 main {
-    width: 80%;
+    width: 650px;
     margin: 0 auto;
 }
 .game-board {
@@ -18,6 +18,15 @@ main {
     justify-content: center;
     align-content: center;
 }
+.status-board {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+}
+.subboard {
+    border: 2px solid black;
+    padding: 0.5rem;
+}
 .tile {
     box-shadow: 0 0 15px rgba(150, 150, 150, 0.5);
     transition: all 0.5s ease-out;
@@ -27,4 +36,10 @@ main {
 }
 .player2 {
     box-shadow: 0 0 25px rgba(60, 60, 255, 0.5);
+}
+h3 {
+    margin: 0;
+}
+p {
+    margin-top: 0;
 }

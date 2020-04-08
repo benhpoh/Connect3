@@ -3,23 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jedi vs Sith</title>
+    <title>Connect 3</title>
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
     <main>
         <header>
-            Tic Tac Toe
+            <h1>Connect 3</h1>
         </header>
+
         <div class="game-board">
             <div class="grd-a grd-1 grd-x tile"></div> <div class="grd-a grd-2 tile"></div> <div class="grd-a grd-3 grd-y tile"></div>
             <div class="grd-b grd-1 tile"></div> <div class="grd-b grd-2 grd-x grd-y tile"></div> <div class="grd-b grd-3 tile"></div>
             <div class="grd-c grd-1 grd-y tile"></div> <div class="grd-c grd-2 tile"></div> <div class="grd-c grd-3 grd-x tile"></div>
         </div>
-        <section class="scoreboard">
-            <div>Player 1 score</div>
-            <div>Player 2 score</div>
-        </section>
+
+        <div class="status-board">
+            <section class="subboard">
+                <div>
+                    <h3>Red player's score</h3>
+                    <p id="player1-score-display" class="score-bar">0</p>
+                </div>
+                <div>
+                    <h3>Blue player's score</h3>
+                    <p id="player2-score-display" class="score-bar">0</p>
+                </div>
+            </section>
+
+            <section class="subboard">
+                <div id="reset-btn">
+                    <h3>Status:</h4>
+                        <br>
+                    <p id="status-message">Red player's turn</p>
+                </div>
+            </section>
+        </div>
     </main>
     <script src="gamelogic.js"></script>
 </body>
