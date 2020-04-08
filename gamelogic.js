@@ -28,7 +28,7 @@ console.log("Script loaded!")
 // 6. BONUS SECTION
 //  6.1 Create bot to play against
 //      6.1.1 Bot will assume player 2 position. If player 1 does x move, do Y move instead.
-//      6.1.2 Create silly bot first. Use math.random to pick an unclaimed spot.
+//      6.1.2 Create silly bot first. Use math.random to pick an unclaimed spot. // DONE
 //      6.1.3 Create unbeatable bot.
 
 
@@ -117,7 +117,92 @@ const checkWin = () => {
         }
     })
 }
+// --------------
+// Bot functions
+// --------------
+const sillyBotTurn = () => {
+    console.log("Silly bot choosing")
+    var tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+    if (playerTurn === "blue") {
+        while (tileBotChose.classList.contains("red-player") || tileBotChose.classList.contains("blue-player")) {
+            tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+        }
+        tileBotChose.classList.add("blue-player")
+        playerTurn = "red";
+        statusMessage.textContent = "Red player's turn";
+        checkWin();
+    } else {
+        return "It's not my turn, human..."
+    }
+}
+const superBotTurn = () => {
+    if (document.querySelectorAll(".red-player").length === 0) {
+        console.log("Bot making first move");
+        tiles[0].classList.add("blue-player");
+        playerTurn = "red";
+        statusMessage.textContent = "Red player's turn";
+        checkWin();
+    } else if (!tiles[4].classList.contains("blue-player") && 
+                !tiles[4].classList.contains("red-player") &&  
+                (tiles[0].classList.contains("red-player") || 
+                 tiles[2].classList.contains("red-player") || 
+                 tiles[6].classList.contains("red-player") || 
+                 tiles[8].classList.contains("red-player")) ) {
+        console.log("Bot picking middle tile")
+        tiles[4].classList.add("blue-player");
+        playerTurn = "red";
+        statusMessage.textContent = "Red player's turn";
+        checkWin();
+    } else if (!tiles[0].classList.contains("red-player") && 
+                !tiles[0].classList.contains("blue-player") && 
+                !tiles[2].classList.contains("red-player") && 
+                !tiles[6].classList.contains("red-player") && 
+                !tiles[8].classList.contains("red-player")){
+        console.log("Bot picking NW tile")
+        tiles[0].classList.add("blue-player");
+        playerTurn = "red";
+        statusMessage.textContent = "Red player's turn";
+        checkWin();
+    } else {
+        allGrids.forEach( (grid) => {
+            if (playerTurn !== "blue") {
+                return;
+            } // guard condition preventing further execution
+            gridScore = calculateGridScore(grid);
+            if (gridScore === -2) {
+                console.log("Bot completing");
+                grid.forEach( (tile) => {
+                    if (!tile.classList.contains("blue-player")) {
+                        tile.classList.add("blue-player");
+                        playerTurn = "red";
+                        statusMessage.textContent = "Red player's turn";
+                        checkWin();
+                    }
+                })
+                return;
+            } else if (gridScore === 2) {
+                console.log("Bot blocking");
+                grid.forEach( (tile) => {
+                    if (!tile.classList.contains("red-player")) {
+                        tile.classList.add("blue-player");
+                        playerTurn = "red";
+                        statusMessage.textContent = "Red player's turn";
+                        checkWin();
+                    }
+                })
+                return;
+            }
+        })
+        if (playerTurn !== "blue") {
+            return;
+        }
+        sillyBotTurn();
+    }
+}
 
+// ------------------------
+// Event handler functions
+// ------------------------
 const handleTile = (event) => {
     if (playerTurn == null) {
         console.log("Game over");
@@ -145,9 +230,13 @@ const handleTile = (event) => {
         statusMessage.textContent = "It's a draw. Click here to reset the board.";
         playerTurn = null;
     }
+    // Bot mode activation
     if (header.classList.contains("bot-mode") && playerTurn === "blue") {
         statusMessage.textContent = "Bot is making a move";
         setTimeout(sillyBotTurn,2000);
+    } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
+        statusMessage.textContent = "Bot is making a move";
+        setTimeout(superBotTurn,2000);
     }
 }
 
@@ -167,9 +256,13 @@ const handleReset = () => {
             } else if (lastWinner === "red") {
                 playerTurn = "blue";
                 statusMessage.textContent = "Blue player, select a starting tile.";
+                // Bot mode activation
                 if (header.classList.contains("bot-mode") && playerTurn === "blue") {
                     statusMessage.textContent = "Bot is making a move";
                     setTimeout(sillyBotTurn,2000);
+                } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
+                    statusMessage.textContent = "Bot is making a move";
+                    setTimeout(superBotTurn,1000);
                 }
             }
         }
@@ -178,14 +271,19 @@ const handleReset = () => {
 }
 
 const handleSillyBotMode = (event) => {
+    console.log("Silly bot activated")
     event.target.classList.remove("super-bot-mode");
     event.target.classList.toggle("bot-mode");
 }
 const handleSuperBotMode = (event) => {
+    console.log("Smarter bot activated")
     event.target.classList.remove("bot-mode");
     event.target.classList.toggle("super-bot-mode");
 }
 
+// ----------------
+// Event listeners
+// ----------------
 tiles.forEach( (tile) => {
     tile.addEventListener("click", handleTile);
 });
@@ -193,20 +291,3 @@ resetBox.addEventListener("click",handleReset);
 header.addEventListener("click",handleSillyBotMode);
 header.addEventListener("dblclick",handleSuperBotMode);
 
-// Silly bot
-
-// insert interceptor code when bot-mode is ON, and playerturn is blue
-const sillyBotTurn = () => {
-    var tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
-    if (playerTurn === "blue") {
-        while (tileBotChose.classList.contains("red-player") || tileBotChose.classList.contains("blue-player")) {
-            tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
-        }
-        tileBotChose.classList.add("blue-player")
-        playerTurn = "red";
-        statusMessage.textContent = "Red player's turn";
-        checkWin();
-    } else {
-        console.log("It's not my turn, human...")
-    }
-}
