@@ -79,14 +79,24 @@ const checkWin = () => {
     const changeHeader = () => {
         if (lastWinner === "red") {
             headerTiles.forEach( (tile) => {
-                tile.classList.add("red-winner");
                 tile.classList.remove("blue-winner");
             })
+            for (var i = 0; i < headerTiles.length; i++) {
+                if (!headerTiles[i].classList.contains("red-winner")) {
+                    headerTiles[i].classList.add("red-winner");
+                    return;
+                } 
+            }
         } else if (lastWinner === "blue") {
             headerTiles.forEach( (tile) => {
-                tile.classList.add("blue-winner");
                 tile.classList.remove("red-winner");
             })
+            for (var i = 0; i < headerTiles.length; i++) {
+                if (!headerTiles[i].classList.contains("blue-winner")) {
+                    headerTiles[i].classList.add("blue-winner");
+                    return;
+                } 
+            }
         }
     }
 
