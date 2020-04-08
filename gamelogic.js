@@ -31,6 +31,7 @@ const statusMessage = document.querySelector("#status-message");
 const resetBox = document.querySelector("#reset-box");
 const redPlayerScoreDisplay = document.querySelector("#redPlayer-score-display");
 const bluePlayerScoreDisplay = document.querySelector("#bluePlayer-score-display");
+const gameBoard = document.querySelector(".game-board");
 var playerTurn = "red";
 var lastWinner = null;
 var redPlayerScore = 0;
@@ -50,9 +51,9 @@ const allGrids = [grdA, grdB, grdC, grd1, grd2, grd3, grdX, grdY]
 const calculateGridScore = (grid) => {
     var gridScore = 0;
     for (let i = 0; i < grid.length; i++) {
-        if (grid[i].classList.contains("redPlayer")) {
+        if (grid[i].classList.contains("red-player")) {
             gridScore += 1;
-        } else if (grid[i].classList.contains("bluePlayer")) {
+        } else if (grid[i].classList.contains("blue-player")) {
             gridScore -= 1;
         }
     }
@@ -94,22 +95,22 @@ const handleTile = (event) => {
         return;
     } // guard condition
     
-    if (event.target.classList.contains("redPlayer") || event.target.classList.contains("bluePlayer")) {
+    if (event.target.classList.contains("red-player") || event.target.classList.contains("blue-player")) {
         statusMessage.textContent = "Tile has already been occupied. Choose another tile.";
     } else if (playerTurn === "red") {
-        event.target.classList.add("redPlayer");
+        event.target.classList.add("red-player");
         playerTurn = "blue";
         statusMessage.textContent = "Blue player's turn";
         checkWin();
     } else if (playerTurn === "blue") {
-        event.target.classList.add("bluePlayer");
+        event.target.classList.add("blue-player");
         playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
         checkWin();
     }
 
-    var redPlayerTiles = document.querySelectorAll(".redPlayer").length
-    var bluePlayerTiles = document.querySelectorAll(".bluePlayer").length
+    var redPlayerTiles = document.querySelectorAll(".red-player").length
+    var bluePlayerTiles = document.querySelectorAll(".blue-player").length
 
     if (playerTurn != null && redPlayerTiles + bluePlayerTiles === tiles.length) {
         statusMessage.textContent = "It's a draw. Click here to reset the board.";
@@ -120,11 +121,13 @@ const handleTile = (event) => {
 const handleReset = () => {
     if (playerTurn === null) {
         statusMessage.textContent = "One second. Board is being reset...";
+        gameBoard.classList.add("shake-horizontal");
         tiles.forEach( (tile) => {
-            tile.classList.remove("redPlayer");
-            tile.classList.remove("bluePlayer");
+            tile.classList.remove("red-player");
+            tile.classList.remove("blue-player");
         })
         const refreshStatus = () => {
+            gameBoard.classList.remove("shake-horizontal");
             if (lastWinner === "blue") {
                 playerTurn = "red";
                 statusMessage.textContent = "Red player, select a starting tile.";
