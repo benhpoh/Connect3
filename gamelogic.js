@@ -236,7 +236,7 @@ const handleTile = (event) => {
         setTimeout(sillyBotTurn,2000);
     } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
         statusMessage.textContent = "Bot is making a move";
-        setTimeout(superBotTurn,2000);
+        setTimeout(superBotTurn,1000);
     }
 }
 
@@ -253,7 +253,7 @@ const handleReset = () => {
             if (lastWinner === "blue") {
                 playerTurn = "red";
                 statusMessage.textContent = "Red player, select a starting tile.";
-            } else if (lastWinner === "red") {
+            } else {
                 playerTurn = "blue";
                 statusMessage.textContent = "Blue player, select a starting tile.";
                 // Bot mode activation
