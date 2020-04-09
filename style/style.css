@@ -80,6 +80,9 @@ h6 {
 p {
     margin-top: 0;
 }
+a {
+  color: inherit;
+}
 #reset-box :hover {
     cursor: pointer;
 }
