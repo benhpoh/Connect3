@@ -1,3 +1,7 @@
+![Connect 3](images/Connect3.png "Connect 3 UI")
+
+[Play Connect 3 here](https://benhpoh.github.io/tic-tac-toe/)
+
 # Connect 3 Readme
 
 The game's objective is for a player to connect 3 tiles in a straight path. 
