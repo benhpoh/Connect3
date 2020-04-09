@@ -36,6 +36,7 @@ const tiles = document.querySelectorAll(".tile");
 const headerTiles = document.querySelectorAll(".header-tile");
 const statusMessage = document.querySelector("#status-message");
 const resetBox = document.querySelector("#reset-box");
+const resetBtn = document.querySelector(".reset-btn");
 const header = document.querySelector("h1");
 const redPlayerScoreDisplay = document.querySelector("#redPlayer-score-display");
 const bluePlayerScoreDisplay = document.querySelector("#bluePlayer-score-display");
@@ -46,15 +47,15 @@ var redPlayerScore = 0;
 var bluePlayerScore = 0;
 
 //grid checker
-const grdA = document.querySelectorAll(".grd-a")
-const grdB = document.querySelectorAll(".grd-b")
-const grdC = document.querySelectorAll(".grd-c")
-const grd1 = document.querySelectorAll(".grd-1")
-const grd2 = document.querySelectorAll(".grd-2")
-const grd3 = document.querySelectorAll(".grd-3")
-const grdX = document.querySelectorAll(".grd-x")
-const grdY = document.querySelectorAll(".grd-y")
-const allGrids = [grdA, grdB, grdC, grd1, grd2, grd3, grdX, grdY]
+const grdA = document.querySelectorAll(".grd-a");
+const grdB = document.querySelectorAll(".grd-b");
+const grdC = document.querySelectorAll(".grd-c");
+const grd1 = document.querySelectorAll(".grd-1");
+const grd2 = document.querySelectorAll(".grd-2");
+const grd3 = document.querySelectorAll(".grd-3");
+const grdX = document.querySelectorAll(".grd-x");
+const grdY = document.querySelectorAll(".grd-y");
+const allGrids = [grdA, grdB, grdC, grd1, grd2, grd3, grdX, grdY];
 
 const calculateGridScore = (grid) => {
     var gridScore = 0;
@@ -65,7 +66,7 @@ const calculateGridScore = (grid) => {
             gridScore -= 1;
         }
     }
-    return gridScore
+    return gridScore;
 }
 
 
@@ -73,7 +74,7 @@ const calculateGridScore = (grid) => {
 const checkWin = () => {
     const clearLoser = (loser) => {
         tiles.forEach( (tile) => {
-            tile.classList.remove(loser)
+            tile.classList.remove(loser);
         })
     }
     const changeHeader = () => {
@@ -99,11 +100,18 @@ const checkWin = () => {
             }
         }
     }
+    var redPlayerTiles = document.querySelectorAll(".red-player").length;
+    var bluePlayerTiles = document.querySelectorAll(".blue-player").length;
+
+    if (playerTurn != null && redPlayerTiles + bluePlayerTiles === tiles.length) {
+        statusMessage.textContent = "It's a draw. Click here to reset the board.";
+        playerTurn = null;
+    }
 
     allGrids.forEach((grid) => { 
         gridScore = calculateGridScore(grid);
         if (gridScore === 3) {
-            statusMessage.textContent = "Red player wins! Click here to reset the board."
+            statusMessage.textContent = "Red player wins! Click on Reset Board to continue.";
             setTimeout(clearLoser, 1000, "blue-player");
             lastWinner = "red";
             playerTurn = null;
@@ -111,7 +119,7 @@ const checkWin = () => {
             changeHeader();
         } else if (gridScore === -3) {
             setTimeout(clearLoser, 1000, "red-player");
-            statusMessage.textContent = "Blue player wins! Click here to reset the board."
+            statusMessage.textContent = "Blue player wins! Click on Reset Board to continue.";
             lastWinner = "blue";
             playerTurn = null;
             bluePlayerScore += 1;
@@ -131,24 +139,26 @@ const checkWin = () => {
 // Bot functions
 // --------------
 const sillyBotTurn = () => {
-    console.log("Silly bot choosing")
-    var tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+    console.log("Silly bot choosing");
+    var tileBotChose = tiles[Math.floor(Math.random()*tiles.length)];
     if (playerTurn === "blue") {
         while (tileBotChose.classList.contains("red-player") || tileBotChose.classList.contains("blue-player")) {
-            tileBotChose = tiles[Math.floor(Math.random()*tiles.length)]
+            tileBotChose = tiles[Math.floor(Math.random()*tiles.length)];
         }
-        tileBotChose.classList.add("blue-player")
+        tileBotChose.classList.add("blue-player");
         playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
         checkWin();
     } else {
-        return "It's not my turn, human..."
+        return "It's not my turn, human...";
     }
 }
 const superBotTurn = () => {
     if (document.querySelectorAll(".red-player").length === 0) {
         console.log("Bot making first move");
-        tiles[0].classList.add("blue-player");
+        var cornerTilesIndex = [0, 2, 6, 8];
+        var randomCornerTileIndex = cornerTilesIndex[Math.floor(Math.random()*4)];
+        tiles[randomCornerTileIndex].classList.add("blue-player");
         playerTurn = "red";
         statusMessage.textContent = "Red player's turn";
         checkWin();
@@ -177,7 +187,7 @@ const superBotTurn = () => {
         allGrids.forEach( (grid) => {
             if (playerTurn !== "blue") {
                 return;
-            } // guard condition preventing further execution
+            } // guard condition preventing further loop execution
             gridScore = calculateGridScore(grid);
             if (gridScore === -2) {
                 // console.log("Bot completing");
@@ -204,7 +214,7 @@ const superBotTurn = () => {
             }
         })
         if (playerTurn !== "blue") {
-            return;
+            return "It's not my turn, human...";
         }
         sillyBotTurn();
     }
@@ -233,13 +243,6 @@ const handleTile = (event) => {
         checkWin();
     }
 
-    var redPlayerTiles = document.querySelectorAll(".red-player").length;
-    var bluePlayerTiles = document.querySelectorAll(".blue-player").length;
-
-    if (playerTurn != null && redPlayerTiles + bluePlayerTiles === tiles.length) {
-        statusMessage.textContent = "It's a draw. Click here to reset the board.";
-        playerTurn = null;
-    }
     // Bot mode activation
     if (header.classList.contains("bot-mode") && playerTurn === "blue") {
         statusMessage.textContent = "Bot is making a move";
@@ -250,34 +253,61 @@ const handleTile = (event) => {
     }
 }
 
-const handleReset = () => {
-    if (playerTurn === null) {
-        statusMessage.textContent = "One second. Board is being reset...";
-        gameBoard.classList.add("shake-horizontal");
-        tiles.forEach( (tile) => {
-            tile.classList.remove("red-player");
-            tile.classList.remove("blue-player");
-        })
-        const refreshStatus = () => {
-            gameBoard.classList.remove("shake-horizontal");
-            if (lastWinner === "blue") {
-                playerTurn = "red";
-                statusMessage.textContent = "Red player, select a starting tile.";
-            } else {
-                playerTurn = "blue";
-                statusMessage.textContent = "Blue player, select a starting tile.";
-                // Bot mode activation
-                if (header.classList.contains("bot-mode") && playerTurn === "blue") {
-                    statusMessage.textContent = "Bot is making a move";
-                    setTimeout(sillyBotTurn,2000);
-                } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
-                    statusMessage.textContent = "Bot is making a move";
-                    setTimeout(superBotTurn,1000);
-                }
+// const handleReset = () => {
+//     if (playerTurn === null) {
+//         statusMessage.textContent = "One second. Board is being reset...";
+//         gameBoard.classList.add("shake-horizontal");
+//         tiles.forEach( (tile) => {
+//             tile.classList.remove("red-player");
+//             tile.classList.remove("blue-player");
+//         })
+//         const refreshStatus = () => {
+//             gameBoard.classList.remove("shake-horizontal");
+//             if (lastWinner === "blue") {
+//                 playerTurn = "red";
+//                 statusMessage.textContent = "Red player, select a starting tile.";
+//             } else {
+//                 playerTurn = "blue";
+//                 statusMessage.textContent = "Blue player, select a starting tile.";
+//                 // Bot mode activation
+//                 if (header.classList.contains("bot-mode") && playerTurn === "blue") {
+//                     statusMessage.textContent = "Bot is making a move";
+//                     setTimeout(sillyBotTurn,2000);
+//                 } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
+//                     statusMessage.textContent = "Bot is making a move";
+//                     setTimeout(superBotTurn,1000);
+//                 }
+//             }
+//         }
+//         setTimeout(refreshStatus, 1000);
+//     }
+// }
+const handleForceReset = () => {
+    statusMessage.textContent = "One second. Board is being reset...";
+    gameBoard.classList.add("shake-horizontal");
+    tiles.forEach( (tile) => {
+        tile.classList.remove("red-player");
+        tile.classList.remove("blue-player");
+    })
+    const refreshStatus = () => {
+        gameBoard.classList.remove("shake-horizontal");
+        if (lastWinner === "blue") {
+            playerTurn = "red";
+            statusMessage.textContent = "Red player, select a starting tile.";
+        } else {
+            playerTurn = "blue";
+            statusMessage.textContent = "Blue player, select a starting tile.";
+            // Bot mode activation
+            if (header.classList.contains("bot-mode") && playerTurn === "blue") {
+                statusMessage.textContent = "Bot is making a move";
+                setTimeout(sillyBotTurn,2000);
+            } else if (header.classList.contains("super-bot-mode") && playerTurn === "blue") {
+                statusMessage.textContent = "Bot is making a move";
+                setTimeout(superBotTurn,1000);
             }
         }
-        setTimeout(refreshStatus, 1500)
     }
+    setTimeout(refreshStatus, 1000);
 }
 
 const handleSillyBotMode = (event) => {
@@ -297,7 +327,8 @@ const handleSuperBotMode = (event) => {
 tiles.forEach( (tile) => {
     tile.addEventListener("click", handleTile);
 });
-resetBox.addEventListener("click",handleReset);
+// resetBox.addEventListener("click",handleReset);
+resetBtn.addEventListener("click",handleForceReset);
 header.addEventListener("click",handleSillyBotMode);
 header.addEventListener("dblclick",handleSuperBotMode);
 
