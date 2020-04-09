@@ -8,14 +8,41 @@ When a player wins, the header color updates to reflect the latest winner, and s
 
 One current drawback is that the tile sizes are hardcoded, which may not scale well on differing screen sizes.
 
+# Program Features
+
+The basics of tic-tac-toe apply, where the player wins by connecting 3 tiles in a straight line. This works vertically, horizontally, or diagonally.
+
+Red player has the first go, and when one player wins, the score is added to the tally. The header will be updated to reflect the latest winner's winning streak, and starting move given to the losing player.
+
+As one player wins continuously, the winning streak on the header is updated to match. The moment that player loses, the streak is reset to the opposing player's streak. There's also a running tally on the bottom with a win-rate calculator.
+
+The reset button can be pressed at any time to shake the board clean.
+
 ## Easter Egg
 
-I've programmed 2 levels of bots into the game. The bots are hard-coded as Blue Player, and will initialise upon Red Player making a valid move.
+I've programmed 2 levels of bots into the game. The bots are hard-coded as Blue Player, and will only initialise upon Red Player making a valid move (i.e. activating bot mode when it's already Blue Player's turn will not trigger the first bot move).
 
-Clicking the 'Connect' in the header will cause it to flash and turn aqua, activating silly bot.
+Clicking the 'Connect' in the header will cause it to flash and turn aqua, activating _silly_ bot.
 
 Double clicking 'Connect' will activate **angry** bot. Have fun...
 
+As double clicking isn't available on touch screen devices, mobile platform compatibility is not yet implemented for angry bot.
+
+In future updates, there should be a toggle to choose if the bot is to be Red or Blue, rather than hard-coded.
+
+- ### Silly Bot Logic
+    - Silly bot simply chooses a tile at random, and checks if the tile has already been occupied.
+    - If the tile is clear, that tile will be claimed, and the turn passed to the opposing player.
+    - If the tile is already occupied, the process is repeated until silly bot finds a clear tile.
+
+- ### Angry Bot Logic
+    - Angry bot is coded to recognize a few moves. 
+        - When angry bot is given the starting move, the bot will choose a corner tile at random.
+        - If the opposing player has claimed a corner tile, bot will claim the middle tile, and vice versa.
+        - When the bot has claimed 2 tiles in a line, if the final tile is unclaimed, bot will claim and win.
+        - If a win isn't possible, the bot then searches if the opposing player has any lines with a potential win. If one is found, bot will claim the remainder tile to block the line.
+    - Barring all the above scenarios, bot will temporarily revert to silly bot mode, and pick a tile at random.
+    - The current method to beat angry bot is to intentionally create the scenario that triggers a logic failure in angry bot, and reverting it to silly bot mode.
 
 ## Thought Process
 
