@@ -1,37 +1,5 @@
 console.log("Script loaded!")
 
-// 1. create a 3x3 grid // DONE
-//  1.1 each box in the grid needs to be responsive. addEventListener? // DONE
-//  1.2 each box needs to be uniquely identified. ID instead of class? // DONE
-
-// 2. OPTIONAL UPGRADE. Allow player to choose their avatar. blue / red  // DECLINED
-//  2.1 player 1 selects avatar, player 2 gets assigned remainder // DECLINED
-//  2.2 Decided to alternate players by having the loser start the new game. // DONE
-//      2.2.1 Unexpected side effect. In event of a draw, the loser continues to start. Outcome acceptable. // DONE
-
-// 3. when player 1 selects a box, run a check // DONE
-//  3.1 if the box has already been marked, ask to select again // DONE
-//  3.2 else if the box hasn't been previously marked, mark it with player 1's icon // DONE
-
-// 4. check game logic
-//  4.1 after each player's turn, check if any grid is complete // DONE
-//      4.1.1 this could be done via a positive / negative counter, where player 1's boxes add a positive value, and player 2's returns a negative. // DONE
-//  4.2 if there's 3 in a row, display winner // DONE
-//      4.2.1 If 3 of player1's are in line, the value should be +3, or -3 if player2's are in line // DONE
-//      4.2.2 Board should then be disabled to prevent any further input. // DONE
-//  4.3 else swap turns to next player // DONE
-
-// 5. winner display // DONE
-//  5.1 add score to winning player // DONE
-//  5.2 resets board to empty // DONE
-
-// 6. BONUS SECTION
-//  6.1 Create bot to play against
-//      6.1.1 Bot will assume player 2 position. If player 1 does x move, do Y move instead.
-//      6.1.2 Create silly bot first. Use math.random to pick an unclaimed spot. // DONE
-//      6.1.3 Create unbeatable bot.
-
-
 const tiles = document.querySelectorAll(".tile");
 const headerTiles = document.querySelectorAll(".header-tile");
 const statusMessage = document.querySelector("#status-message");
@@ -329,6 +297,6 @@ tiles.forEach( (tile) => {
 });
 // resetBox.addEventListener("click",handleReset);
 resetBtn.addEventListener("click",handleForceReset);
-header.addEventListener("click",handleSillyBotMode);
-header.addEventListener("dblclick",handleSuperBotMode);
+// header.addEventListener("click",handleSillyBotMode);
+header.addEventListener("click",handleSuperBotMode);
 
