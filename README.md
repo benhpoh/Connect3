@@ -1,6 +1,6 @@
 ![Connect 3](images/Connect3.png "Connect 3 UI")
 
-[Play Connect 3 here](https://benhpoh.github.io/tic-tac-toe/)
+[Play Connect 3 here](https://benhpoh.github.io/Connect3/)
 
 # Connect 3 Readme
 
